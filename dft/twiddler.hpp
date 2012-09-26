@@ -5,13 +5,13 @@
 #include <cmath>
 #include <limits>
 
-namespace dft { detail
+namespace dft { namespace detail
 {
   template<typename T>
-  std::vector<std::complex<T>> getTwiddleFactors(size_t N, bool fwd,
+  std::vector<std::complex<T> > getTwiddleFactors(size_t N, bool fwd,
     size_t Lm1Qm1 = std::numeric_limits<size_t>::max)
   {
-    std::vector<std::complex<T>> factors(std::min(N, Lm1Qm1));
+    std::vector<std::complex<T> > factors(std::min(N, Lm1Qm1));
     if(factors.size() > 0)
     {
       factors[0] = 1;
@@ -39,7 +39,7 @@ struct Twiddler
     :factors(detail::getTwiddleFactors<T>(N_, fwd, Lm1Qm1)),
     N(N_) {}
 
-  const std::vector<std::complex<T>> factors;
+  const std::vector<std::complex<T> > factors;
   const size_t N;
 };
 

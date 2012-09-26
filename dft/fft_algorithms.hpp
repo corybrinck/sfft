@@ -58,13 +58,34 @@ namespace dft
   template<typename Alg>
   struct FFTCooleyTukey
   {
+    template<typename CmplxIter, typename SrcIter>
+    void transposeDftCols(CmplxIter dstBegin, SrcIter srcBegin,
+      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      size_t rows, size_t cols, size_t dstStride = 1, size_t srcStride = 1)
+    {
+      for(size_t r = 0; r < rows; ++r)
+      {
+        Alg()(dstBegin + r*dstStride, srcBegin + r*cols*srcStride,
+          twiddler, cols, rows*dstStride, srcStride);
+      }
+    }
+
+    typedef std::vector<size_t>::iterator FactorIt;
+
+    // TODO:  Figure out how to handle the desired recursion appropriately
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void fftColsDecomposed(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      size_t rows,  size_t cols, FactorIt factorsBegin, FactorIt factorsEnd,
+      size_t dstStride, size_t srcStride, size_t tmpStride);
+
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void fftDecomposed(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
       const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler, size_t N,
       FactorIt factorsBegin, FactorIt factorsEnd,
       size_t dstStride, size_t srcStride, size_t tmpStride)
     {
-      auto factors = std::distance(factorsBegin, factorsEnd);
+      size_t factors = std::distance(factorsBegin, factorsEnd);
 
       if(factors < 2)
       {
@@ -77,9 +98,9 @@ namespace dft
       size_t rows = N/cols;
 
       if(factors == 2)
-        Alg()(tmpBegin, srcBegin, twiddler, rows, cols, tmpStride, srcStride);
+        FFTCols<Alg>(tmpBegin, srcBegin, twiddler, rows, cols, tmpStride, srcStride);
       else
-        fftColsDecomposed<Alg>(tmpBegin, srcBegin, dstBegin,
+        fftColsDecomposed(tmpBegin, srcBegin, dstBegin,
           twiddler, rows, cols, ++factorsBegin, factorsEnd,
           tmpStride, srcStride, dstStride);
 
@@ -93,7 +114,21 @@ namespace dft
         }
       }
 
-      transposeDftCols<Alg>(dstBegin, tmpBegin, twiddler, rows, cols, dstStride, tmpStride);
+      transposeDftCols(dstBegin, tmpBegin, twiddler, rows, cols, dstStride, tmpStride);
     }
-  };
+
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void fftColsDecomposed(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      size_t rows,  size_t cols, FactorIt factorsBegin, FactorIt factorsEnd,
+      size_t dstStride, size_t srcStride, size_t tmpStride)
+    {
+      for(size_t c = 0; c < cols; ++c)
+      {
+        fftDecomposed(dstBegin + c*dstStride, srcBegin + c*srcStride,
+          tmpBegin, twiddler, rows, factorsBegin, factorsEnd,
+          dstStride*cols, srcStride*cols, tmpStride);
+      }
+    }
+  }; // struct FFTCooleyTukey
 } // namespace dft
