@@ -51,6 +51,17 @@ namespace dft
       dstBegin[idx2] += tmp;
     }
   }
+
+  struct FFTOdd
+  {
+    template<typename CmplxIter, typename SrcIter>
+    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
+      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      size_t N, size_t dstStride, size_t srcStride)
+    {
+      fftOdd(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
+    }
+  };
 } // namespace dft
 
 

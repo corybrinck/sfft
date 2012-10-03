@@ -90,13 +90,23 @@ namespace dft { namespace detail
   }
 } //namespace detail
 
-template<typename CmplxIter, typename SrcIter>
-void fftRadix2(CmplxIter dstBegin, SrcIter srcBegin, size_t power, bool fwd,
-  size_t dstStride, size_t srcStride)
-{
-  size_t N = 1 << power;
-  detail::fftMultipleRadix2(dstBegin, dstStride, N, srcBegin, srcStride, N, 1, power, fwd);
-}
+  template<typename CmplxIter, typename SrcIter>
+  void fftRadix2(CmplxIter dstBegin, SrcIter srcBegin, size_t power, bool fwd,
+    size_t dstStride, size_t srcStride)
+  {
+    size_t N = 1 << power;
+    detail::fftMultipleRadix2(dstBegin, dstStride, N, srcBegin, srcStride, N, 1, power, fwd);
+  }
+
+  struct FFT2
+  {
+    template<typename CmplxIter, typename SrcIter>
+    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
+      size_t dstStride, size_t srcStride)
+    {
+      dftRadix2(dstBegin, srcBegin, dstStride, srcStride);
+    }
+  };
 
 } //namespace dft
 

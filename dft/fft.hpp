@@ -1,7 +1,7 @@
 #pragma once
 
 #include "twiddler.hpp"
-#include "fft_algorithms.hpp"
+#include "fft_cooley_tukey.hpp"
 #include "../math/factor.hpp"
 
 namespace dft
@@ -20,7 +20,7 @@ namespace dft
       std::vector<Complex_t> tmp(N);
 
       // TODO: FFTOdd should only be used after removing all factors of 2
-      FFTCooleyTukey<FFTOdd>::fftColsDecomposed(dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
+      FFTCooleyTukey<FFTOdd>().fftColsDecomposed(dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
         factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
     }
   } // namespace detail
