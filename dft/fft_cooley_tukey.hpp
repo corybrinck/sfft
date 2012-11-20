@@ -15,7 +15,7 @@ namespace dft
     {
       for(size_t r = 0; r < rows; ++r)
       {
-        Alg()(dstBegin + r*dstStride, srcBegin + r*cols*srcStride,
+        FFTOdd()(dstBegin + r*dstStride, srcBegin + r*cols*srcStride,
           twiddler, cols, rows*dstStride, srcStride);
       }
     }

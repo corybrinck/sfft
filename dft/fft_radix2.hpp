@@ -1,6 +1,7 @@
 #pragma once
 
 #include "twiddler.hpp"
+#include "../math/factor.hpp"
 
 namespace dft { namespace detail
 {
@@ -98,13 +99,17 @@ namespace dft { namespace detail
     detail::fftMultipleRadix2(dstBegin, dstStride, N, srcBegin, srcStride, N, 1, power, fwd);
   }
 
-  struct FFT2
+  struct FFTRadix2
   {
     template<typename CmplxIter, typename SrcIter>
     void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      size_t dstStride, size_t srcStride)
+      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      size_t N, size_t dstStride, size_t srcStride)
     {
-      dftRadix2(dstBegin, srcBegin, dstStride, srcStride);
+      //TODO: Do an in-place Radix 2 FFT to avoid needing this tmp
+      size_t power = math::numFactors2(N);
+      std::vector<typename CmplxIter::value_type> tmp(N);
+      detail::fftRadix2(dstBegin, srcBegin, tmp.begin(), twiddler, power, dstStride, srcStride, 1);
     }
   };
 

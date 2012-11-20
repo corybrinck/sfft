@@ -16,12 +16,24 @@ namespace dft
       typedef typename CmplxIter::value_type Complex_t;
       typedef typename Complex_t::value_type Float_t;
       Twiddler<Float_t> twiddler(N, fwd, N);
-      std::vector<size_t> factors = math::factor(N);
+      size_t pow2 = math::numFactors2(N);
+      std::vector<size_t> factors = math::factor(N >> pow2);
       std::vector<Complex_t> tmp(N);
 
-      // TODO: FFTOdd should only be used after removing all factors of 2
-      FFTCooleyTukey<FFTOdd>().fftColsDecomposed(dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
-        factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
+      if(pow2 == 0)
+      {
+        FFTCooleyTukey<FFTOdd>().fftColsDecomposed(
+          dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
+          factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
+      }
+      else
+      {
+        factors.push_back(1 << pow2);
+        FFTCooleyTukey<FFTRadix2>().fftColsDecomposed(
+          dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
+          factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
+
+      }
     }
   } // namespace detail
 
