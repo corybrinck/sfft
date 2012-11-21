@@ -9,7 +9,8 @@
 namespace dft
 {
   template<typename CmplxIter, typename SrcIter>
-  void fftOdd(CmplxIter dstBegin, SrcIter srcBegin, const Twiddler<double>& twiddler,
+  void fftOdd(CmplxIter dstBegin, SrcIter srcBegin,
+    const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
     size_t N, size_t dstStride = 1, size_t srcStride = 1)
   {
     typedef typename CmplxIter::value_type Complex_t;
