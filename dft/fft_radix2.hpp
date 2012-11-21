@@ -1,3 +1,7 @@
+/* Copyright 2012, Cory Brinck
+ * Distributed under the terms version 3 of the GNU General Public License
+ * without any warranty. */
+
 #pragma once
 
 #include "twiddler.hpp"
@@ -98,20 +102,6 @@ namespace dft { namespace detail
     size_t N = 1 << power;
     detail::fftMultipleRadix2(dstBegin, dstStride, N, srcBegin, srcStride, N, 1, power, fwd);
   }
-
-  struct FFTRadix2
-  {
-    template<typename CmplxIter, typename SrcIter>
-    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
-      size_t N, size_t dstStride, size_t srcStride)
-    {
-      //TODO: Do an in-place Radix 2 FFT to avoid needing this tmp
-      size_t power = math::numFactors2(N);
-      std::vector<typename CmplxIter::value_type> tmp(N);
-      detail::fftRadix2(dstBegin, srcBegin, tmp.begin(), twiddler, power, dstStride, srcStride, 1);
-    }
-  };
 
 } //namespace dft
 

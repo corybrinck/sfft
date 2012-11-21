@@ -1,3 +1,7 @@
+/* Copyright 2012, Cory Brinck
+ * Distributed under the terms version 3 of the GNU General Public License
+ * without any warranty. */
+
 #pragma once
 
 #include <vector>
@@ -46,7 +50,7 @@ namespace math
     std::vector<size_t> factors(numFactors2(n), 2);
     n = n >> factors.size();
     std::vector<size_t> primes = getPossiblePrimeFactors(n);
-	
+
     for(size_t i = 1; n > 1 && i < primes.size(); ++i)
     {
       size_t factored = n/primes[i];

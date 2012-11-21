@@ -1,3 +1,7 @@
+/* Copyright 2012, Cory Brinck
+ * Distributed under the terms version 3 of the GNU General Public License
+ * without any warranty. */
+
 #pragma once
 
 #include "twiddler.hpp"

@@ -1,3 +1,7 @@
+/* Copyright 2012, Cory Brinck
+ * Distributed under the terms version 3 of the GNU General Public License
+ * without any warranty. */
+
 #pragma once
 
 #include "twiddler.hpp"
@@ -52,16 +56,6 @@ namespace dft
     }
   }
 
-  struct FFTOdd
-  {
-    template<typename CmplxIter, typename SrcIter>
-    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
-      size_t N, size_t dstStride, size_t srcStride)
-    {
-      fftOdd(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
-    }
-  };
 } // namespace dft
 
 
