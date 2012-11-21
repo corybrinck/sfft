@@ -5,9 +5,9 @@
 #pragma once
 
 #include "twiddler.hpp"
-#include "../math/factor.hpp"
+#include "factor.hpp"
 
-namespace dft { namespace detail
+namespace sfft { namespace detail
 {
   template<typename CmplxIter, typename SrcIter>
   void dftRadix2(CmplxIter dstBegin, SrcIter srcBegin,
@@ -103,5 +103,5 @@ namespace dft { namespace detail
     detail::fftMultipleRadix2(dstBegin, dstStride, N, srcBegin, srcStride, N, 1, power, fwd);
   }
 
-} //namespace dft
+} //namespace sfft
 

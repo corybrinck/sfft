@@ -7,9 +7,8 @@
 #include "dft.hpp"
 #include "fft_radix2.hpp"
 #include "fft_odd.hpp"
-#include <assert.h>
 
-namespace dft
+namespace sfft
 {
   struct DFT
   {
@@ -63,4 +62,4 @@ namespace dft
     }
   };
 
-} // namespace dft
+} // namespace sfft

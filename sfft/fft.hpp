@@ -5,10 +5,10 @@
 #pragma once
 
 #include "twiddler.hpp"
+#include "factor.hpp"
 #include "fft_cooley_tukey.hpp"
-#include "../math/factor.hpp"
 
-namespace dft
+namespace sfft
 {
   namespace detail
   {
@@ -59,7 +59,7 @@ namespace dft
   {
     detail::fftMultiple(dstBegin, cols, 1, srcBegin, cols, 1, cols, rows, fwd);
   }
-} // namespace dft
+} // namespace sfft
 
 
 

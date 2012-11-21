@@ -7,7 +7,7 @@
 #include "twiddler.hpp"
 #include "fft_algorithms.hpp"
 
-namespace dft
+namespace sfft
 {
   template<typename Alg>
   struct FFTCooleyTukey

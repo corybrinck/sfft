@@ -9,7 +9,7 @@
 #include <cmath>
 #include <limits>
 
-namespace dft { namespace detail
+namespace sfft { namespace detail
 {
   template<typename T>
   std::vector<std::complex<T> > getTwiddleFactors(size_t N, bool fwd,
@@ -47,5 +47,5 @@ struct Twiddler
   const size_t N;
 };
 
-} //namespace dft
+} //namespace sfft
 

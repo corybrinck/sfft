@@ -6,7 +6,7 @@
 
 #include "twiddler.hpp"
 
-namespace dft
+namespace sfft
 {
   template<typename CmplxIter, typename SrcIter>
   void fftOdd(CmplxIter dstBegin, SrcIter srcBegin,
@@ -57,7 +57,7 @@ namespace dft
     }
   }
 
-} // namespace dft
+} // namespace sfft
 
 
 
