@@ -23,15 +23,13 @@ namespace sfft
 
   struct FFTRadix2
   {
-    template<typename CmplxIter, typename SrcIter>
-    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
-      size_t N, size_t dstStride, size_t srcStride)
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      size_t N, size_t dstStride, size_t srcStride, size_t tmpStride)
     {
-      //TODO: Do an in-place Radix 2 FFT to avoid needing this tmp
       size_t power = math::numFactors2(N);
-      std::vector<typename CmplxIter::value_type> tmp(N);
-      detail::fftRadix2(dstBegin, srcBegin, tmp.begin(), twiddler, power, dstStride, srcStride, 1);
+      detail::fftRadix2(dstBegin, srcBegin, tmpBegin, twiddler, power, dstStride, srcStride, tmpStride);
     }
   };
 
@@ -44,20 +42,28 @@ namespace sfft
     {
       fftOdd(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
     }
+
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      size_t N, size_t dstStride, size_t srcStride, size_t)
+    {
+      operator()(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
+    }
   };
 
   template<typename Alg>
   struct FFTCols
   {
-    template<typename CmplxIter, typename SrcIter>
-    void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
-      size_t rows, size_t cols, size_t dstStride = 1, size_t srcStride = 1)
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      size_t rows, size_t cols, size_t dstStride, size_t srcStride, size_t tmpStride)
     {
       for(size_t c = 0; c < cols; ++c)
       {
-        Alg()(dstBegin + c*dstStride, srcBegin + c*srcStride,
-          twiddler, rows, cols*dstStride, cols*srcStride);
+        Alg()(dstBegin + c*dstStride, srcBegin + c*srcStride, tmpBegin,
+          twiddler, rows, cols*dstStride, cols*srcStride, tmpStride);
       }
     }
   };

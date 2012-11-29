@@ -9,17 +9,17 @@
 
 namespace sfft
 {
-  template<typename Alg>
+  template<typename MainAlg, typename FinalAlg>
   struct FFTCooleyTukey
   {
     template<typename CmplxIter, typename SrcIter>
     void transposeDftCols(CmplxIter dstBegin, SrcIter srcBegin,
       const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
-      size_t rows, size_t cols, size_t dstStride = 1, size_t srcStride = 1)
+      size_t rows, size_t cols, size_t dstStride, size_t srcStride)
     {
       for(size_t r = 0; r < rows; ++r)
       {
-        FFTOdd()(dstBegin + r*dstStride, srcBegin + r*cols*srcStride,
+        MainAlg()(dstBegin + r*dstStride, srcBegin + r*cols*srcStride,
           twiddler, cols, rows*dstStride, srcStride);
       }
     }
@@ -49,7 +49,8 @@ namespace sfft
 
       if(factors < 2)
       {
-        if(factors != 0) Alg()(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
+        if(factors != 0)
+          FinalAlg()(dstBegin, srcBegin, tmpBegin, twiddler, N, dstStride, srcStride, tmpStride);
         return;
       }
 
@@ -57,7 +58,7 @@ namespace sfft
       size_t rows = N/cols;
 
       if(factors == 2)
-        FFTCols<Alg>()(tmpBegin, srcBegin, twiddler, rows, cols, tmpStride, srcStride);
+        FFTCols<FinalAlg>()(tmpBegin, srcBegin, dstBegin, twiddler, rows, cols, tmpStride, srcStride, dstStride);
       else
         fftColsDecomposed(tmpBegin, srcBegin, dstBegin, twiddler, rows, cols,
           ++factorsBegin, factorsEnd, tmpStride, srcStride, dstStride);
@@ -69,6 +70,15 @@ namespace sfft
           tmpBegin[(r*cols + c)*tmpStride] *= twiddler.factors[r*c*twiddleStride];
 
       transposeDftCols(dstBegin, tmpBegin, twiddler, rows, cols, dstStride, tmpStride);
+    }
+
+    template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+    void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler, size_t N,
+      FactorIt factorsBegin, FactorIt factorsEnd,
+      size_t dstStride, size_t srcStride, size_t tmpStride)
+    {
+      fftDecomposed(dstBegin, srcBegin, tmpBegin, twiddler, N, factorsBegin, factorsEnd, dstStride, srcStride, tmpStride);
     }
   }; // struct FFTCooleyTukey
 }

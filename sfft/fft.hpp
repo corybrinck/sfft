@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "twiddler.hpp"
 #include "factor.hpp"
 #include "fft_cooley_tukey.hpp"
 
@@ -24,19 +23,29 @@ namespace sfft
       std::vector<size_t> factors = math::factor(N >> pow2);
       std::vector<Complex_t> tmp(N);
 
-      if(pow2 == 0)
+      if(!factors.empty() || pow2 != 0)
       {
-        FFTCooleyTukey<FFTOdd>().fftColsDecomposed(
-          dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
-          factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
-      }
-      else
-      {
-        factors.push_back(1 << pow2);
-        FFTCooleyTukey<FFTRadix2>().fftColsDecomposed(
-          dstBegin, srcBegin, tmp.begin(), twiddler, N, transforms,
-          factors.begin(), factors.end(), dstSampleStride, srcSampleStride, 1);
-
+        if(pow2 == 0)
+        {
+          for(size_t transform = 0; transform < transforms; ++transform)
+          {
+            FFTCooleyTukey<FFTOdd, FFTOdd>()(
+              dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
+              tmp.begin(), twiddler, N, factors.begin(), factors.end(),
+              dstSampleStride, srcSampleStride, 1);
+          }
+        }
+        else
+        {
+          factors.push_back(1 << pow2);
+          for(size_t transform = 0; transform < transforms; ++transform)
+          {
+            FFTCooleyTukey<FFTOdd, FFTRadix2>()(
+              dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
+              tmp.begin(), twiddler, N, factors.begin(), factors.end(),
+              dstSampleStride, srcSampleStride, 1);
+          }
+        }
       }
     }
   } // namespace detail

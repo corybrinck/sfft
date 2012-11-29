@@ -15,7 +15,7 @@ void test_sfft()
 {
   size_t N = 2*3*4*5*6*7;
   std::deque<int> delta_function(N, 0);
-  delta_function[N/2] = 1.0;
+  delta_function[N/2] = 1;
 
   std::cout << "Delta function length: " << N << std::endl;
 
@@ -31,7 +31,7 @@ void test_sfft()
 
 ---------------------------------------------------------------------------------------
 
-Both in-place and out-of-place trasforms are supported for std::complex inputs. Currently a buffer of memory is allocated and freed internally with most calls regardless of in-place or out-of-place use.  Memory is also allocated internally for Twiddle factors.
+Only out-of-place trasforms are supported for std::complex inputs.  Memory is allocated internally for Twiddle factors and temporary storage.
 
 Cooley-Tukey and Radix-2 algorithms have been implemented, as well as an O(N^2/4) algorithm for prime numbers. No O(N*log(N)) algorithm has yet been implemented for prime DFT sizes.
 
