@@ -16,35 +16,35 @@ namespace sfft
       SrcIter srcBegin, size_t srcSampleStride, size_t srcTransformStride,
       size_t transforms, size_t N, bool fwd)
     {
-      typedef typename CmplxIter::value_type Complex_t;
+      typedef typename DereferencedType<CmplxIter> Complex_t;
       typedef typename Complex_t::value_type Float_t;
       Twiddler<Float_t> twiddler(N, fwd, N);
       size_t pow2 = math::numFactors2(N);
       std::vector<size_t> factors = math::factor(N >> pow2);
       std::vector<Complex_t> tmp(N);
 
-      if(!factors.empty() || pow2 != 0)
+      if (pow2 == 0)
       {
-        if(pow2 == 0)
+        if (factors.empty())
+          factors.push_back(1);
+
+        for (size_t transform = 0; transform < transforms; ++transform)
         {
-          for(size_t transform = 0; transform < transforms; ++transform)
-          {
-            FFTCooleyTukey<FFTOdd, FFTOdd>()(
-              dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
-              tmp.begin(), twiddler, N, factors.begin(), factors.end(),
-              dstSampleStride, srcSampleStride, 1);
-          }
+          FFTCooleyTukey<FFTOdd, FFTOdd>()(
+            dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
+            tmp.data(), twiddler, N, factors.begin(), factors.end(),
+            dstSampleStride, srcSampleStride, 1);
         }
-        else
+      }
+      else
+      {
+        factors.push_back(size_t(1) << pow2);
+        for (size_t transform = 0; transform < transforms; ++transform)
         {
-          factors.push_back(1 << pow2);
-          for(size_t transform = 0; transform < transforms; ++transform)
-          {
-            FFTCooleyTukey<FFTOdd, FFTRadix2>()(
-              dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
-              tmp.begin(), twiddler, N, factors.begin(), factors.end(),
-              dstSampleStride, srcSampleStride, 1);
-          }
+          FFTCooleyTukey<FFTOdd, FFTRadix2>()(
+            dstBegin + transform*dstTransformStride, srcBegin + transform*srcTransformStride,
+            tmp.data(), twiddler, N, factors.begin(), factors.end(),
+            dstSampleStride, srcSampleStride, 1);
         }
       }
     }
@@ -67,6 +67,14 @@ namespace sfft
   void fftCols(CmplxIter dstBegin, SrcIter srcBegin, size_t rows, size_t cols, bool fwd)
   {
     detail::fftMultiple(dstBegin, cols, 1, srcBegin, cols, 1, cols, rows, fwd);
+  }
+
+  template<typename CmplxIter, typename SrcIter>
+  void fft2D(CmplxIter dstBegin, SrcIter srcBegin, size_t rows, size_t cols, bool fwd)
+  {
+    std::vector<DereferencedType<CmplxIter>> tmp(rows*cols);
+    fftRows(tmp.data(), srcBegin, rows, cols, fwd);
+    fftCols(dstBegin, tmp.data(), rows, cols, fwd);
   }
 } // namespace sfft
 

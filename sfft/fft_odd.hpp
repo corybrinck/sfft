@@ -10,11 +10,11 @@ namespace sfft
 {
   template<typename CmplxIter, typename SrcIter>
   void fftOdd(CmplxIter dstBegin, SrcIter srcBegin,
-    const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+    const Twiddler<typename DereferencedType<CmplxIter>::value_type>& twiddler,
     size_t N, size_t dstStride = 1, size_t srcStride = 1)
   {
-    typedef typename CmplxIter::value_type Complex_t;
-    typedef typename SrcIter::value_type Source_t;
+    typedef typename DereferencedType<CmplxIter> Complex_t;
+    typedef typename DereferencedType<SrcIter> Source_t;
     size_t L = N/2 + 1;
 
     size_t twiddleStride = twiddler.N/N;

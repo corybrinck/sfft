@@ -14,7 +14,7 @@ namespace sfft
   {
     template<typename CmplxIter, typename SrcIter>
     void transposeDftCols(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter>::value_type>& twiddler,
       size_t rows, size_t cols, size_t dstStride, size_t srcStride)
     {
       for(size_t r = 0; r < rows; ++r)
@@ -28,7 +28,7 @@ namespace sfft
 
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void fftColsDecomposed(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
       size_t rows,  size_t cols, FactorIt factorsBegin, FactorIt factorsEnd,
       size_t dstStride, size_t srcStride, size_t tmpStride)
     {
@@ -41,7 +41,7 @@ namespace sfft
 
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void fftDecomposed(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler, size_t N,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler, size_t N,
       FactorIt factorsBegin, FactorIt factorsEnd,
       size_t dstStride, size_t srcStride, size_t tmpStride)
     {
@@ -74,7 +74,7 @@ namespace sfft
 
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler, size_t N,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler, size_t N,
       FactorIt factorsBegin, FactorIt factorsEnd,
       size_t dstStride, size_t srcStride, size_t tmpStride)
     {

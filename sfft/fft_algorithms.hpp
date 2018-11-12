@@ -14,7 +14,7 @@ namespace sfft
   {
     template<typename CmplxIter, typename SrcIter>
     void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter>::value_type>& twiddler,
       size_t N, size_t dstStride, size_t srcStride)
     {
       dft(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
@@ -25,7 +25,7 @@ namespace sfft
   {
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
       size_t N, size_t dstStride, size_t srcStride, size_t tmpStride)
     {
       size_t power = math::numFactors2(N);
@@ -37,7 +37,7 @@ namespace sfft
   {
     template<typename CmplxIter, typename SrcIter>
     void operator()(CmplxIter dstBegin, SrcIter srcBegin,
-      const Twiddler<typename CmplxIter::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter>::value_type>& twiddler,
       size_t N, size_t dstStride, size_t srcStride)
     {
       fftOdd(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
@@ -45,7 +45,7 @@ namespace sfft
 
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
       size_t N, size_t dstStride, size_t srcStride, size_t)
     {
       operator()(dstBegin, srcBegin, twiddler, N, dstStride, srcStride);
@@ -57,7 +57,7 @@ namespace sfft
   {
     template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
     void operator()(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-      const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+      const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
       size_t rows, size_t cols, size_t dstStride, size_t srcStride, size_t tmpStride)
     {
       for(size_t c = 0; c < cols; ++c)

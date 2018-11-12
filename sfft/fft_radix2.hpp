@@ -41,7 +41,7 @@ namespace sfft { namespace detail
 
   template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
   void fftRadix2Cols(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-    const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+    const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
     size_t power, size_t cols, size_t dstStride, size_t srcStride, size_t tmpStride)
   {
     for(size_t c = 0; c < cols; ++c)
@@ -53,7 +53,7 @@ namespace sfft { namespace detail
 
   template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
   void fftRadix2(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
-    const Twiddler<typename CmplxIter1::value_type::value_type>& twiddler,
+    const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
     size_t power, size_t dstStride, size_t srcStride, size_t tmpStride)
   {
     if(power < 2)
@@ -72,7 +72,7 @@ namespace sfft { namespace detail
 
     // Multiply
     size_t twiddleStride = twiddler.N >> power;
-    size_t rows = 1 << (power-1);
+    size_t rows = size_t(1) << (power-1);
     for(size_t r = 1; r < rows; ++r)
       tmpBegin[tmpStride*(2*r + 1)] *= twiddler.factors[r*twiddleStride];
 
@@ -84,7 +84,7 @@ namespace sfft { namespace detail
     SrcIter srcBegin, size_t srcSampleStride, size_t srcTransformStride,
     size_t transforms, size_t power, bool fwd)
   {
-    typedef typename CmplxIter::value_type Complex_t;
+    typedef DereferencedType<CmplxIter> Complex_t;
     typedef typename Complex_t::value_type Float_t;
     size_t N = 1 << power;
     Twiddler<Float_t> twiddler(N, fwd, (N >> 1) - 1);

@@ -35,6 +35,9 @@ namespace sfft { namespace detail
   }
 } // namespace detail
 
+template<typename Iterator>
+using DereferencedType = typename std::remove_reference<decltype(*(Iterator()))>::type;
+
 template<typename T>
 struct Twiddler
 {
