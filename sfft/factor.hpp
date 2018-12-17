@@ -10,6 +10,17 @@ namespace sfft
 {
   namespace math
   {
+    inline std::size_t  nextPowerOf2(std::size_t  n)
+    {
+      if ((n << 1) < n) return 0; // Integer overflow;
+
+      std::size_t  powerOf2 = 1;
+      while (powerOf2 < n)
+        powerOf2 = powerOf2 << 1;
+
+      return powerOf2;
+    }
+
     inline std::vector<std::size_t> getPossiblePrimeFactors(std::size_t n)
     {
       std::vector<std::size_t> primes = {2,3,5,7,11,13,17,19,23};
@@ -61,5 +72,21 @@ namespace sfft
     }
 
   } //namespace math
+
+  /** returns a value >= n with small primes (<= 13) for efficient FFTs. */
+  inline std::size_t fftSize(std::size_t n)
+  {
+    std::size_t np2 = math::nextPowerOf2(n); // Next integer power of 2
+
+    // If N is a small prime, or the next power of 2 > max integer
+    if (np2 < 16) return n;
+
+    std::size_t x = np2 >> 4; // Divide by 16
+    std::size_t y = 9 * x;    // Start at 9/16*np2
+    while (y < n)        // Increment by np2/16 until y >= n
+      y += x;            // y = (9, 10, 11, ...) * np2/16
+
+    return y;
+  }
 }
 
