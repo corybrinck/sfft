@@ -39,6 +39,13 @@ namespace sfft { namespace detail
     }
   }
 
+  //Pre-declare this function
+  template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
+  void fftRadix2(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
+	  const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,
+	  size_t power, size_t dstStride, size_t srcStride, size_t tmpStride);
+
+
   template<typename CmplxIter1, typename SrcIter, typename CmplxIter2>
   void fftRadix2Cols(CmplxIter1 dstBegin, SrcIter srcBegin, CmplxIter2 tmpBegin,
     const Twiddler<typename DereferencedType<CmplxIter1>::value_type>& twiddler,

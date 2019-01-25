@@ -16,7 +16,7 @@ namespace sfft
       SrcIter srcBegin, size_t srcSampleStride, size_t srcTransformStride,
       size_t transforms, size_t N, bool fwd)
     {
-      typedef typename DereferencedType<CmplxIter> Complex_t;
+      typedef DereferencedType<CmplxIter> Complex_t;
       typedef typename Complex_t::value_type Float_t;
       Twiddler<Float_t> twiddler(N, fwd, N);
       size_t pow2 = math::numFactors2(N);

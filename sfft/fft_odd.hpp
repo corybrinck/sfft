@@ -13,8 +13,8 @@ namespace sfft
     const Twiddler<typename DereferencedType<CmplxIter>::value_type>& twiddler,
     size_t N, size_t dstStride = 1, size_t srcStride = 1)
   {
-    typedef typename DereferencedType<CmplxIter> Complex_t;
-    typedef typename DereferencedType<SrcIter> Source_t;
+    typedef DereferencedType<CmplxIter> Complex_t;
+    typedef DereferencedType<SrcIter> Source_t;
     size_t L = N/2 + 1;
 
     size_t twiddleStride = twiddler.N/N;
