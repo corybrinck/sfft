@@ -25,7 +25,7 @@ namespace sfft
     {
       std::vector<std::size_t> primes = {2,3,5,7,11,13,17,19,23};
 
-      std::size_t sqrt_n = static_cast<std::size_t>(std::sqrt<size_t>(n));
+      std::size_t sqrt_n = static_cast<std::size_t>(std::sqrt(static_cast<double>(n)));
       while (!primes.empty() && primes.back() > sqrt_n)
       {
         if (primes.back() == n)
